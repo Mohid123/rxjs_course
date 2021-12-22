@@ -39,7 +39,23 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
 
+      this.form.valueChanges.pipe(
+        filter(() => this.form.valid)
+      )
+      .subscribe(changes => {
 
+        const saveCourse$ = fromPromise(fetch(`/api/courses/${this.course.id}`, {
+          method: "PUT",
+          body: JSON.stringify(changes),
+          headers: {
+            'content-type': 'application/json'
+          }
+        }));
+
+        //saveCourse$.subscribe() // subscribe inside a subscribe is bad practice
+      });
+      //fromPromise is a rxjs operator that converts pomises to observable
+      //since fetch() returns a promise
 
     }
 
