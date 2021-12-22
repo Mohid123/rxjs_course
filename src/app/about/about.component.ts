@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { interval, timer, Observable, noop, of, concat } from 'rxjs';
+import { interval, timer, Observable, noop, of, concat, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -146,10 +146,21 @@ courses$.subscribe(courses => {
 // result$.subscribe(val => console.log(val)); //all concatenated together
 
 
-// Lesson 10
+// Lesson 10 see coursedialogcomponent
 
-//concatMap()
+// Lesson 12 --- merge
 
+  // const interval1 = interval(1000);
+  // const interval2 = interval1.pipe(map(val => val*10));
+
+  // const result2$ = merge(interval1, interval2);
+
+  // result2$.subscribe(console.log);
+
+//merge is ideal for running lon operations in parallel
+
+
+// Lesson 13 --- mergeMap. see coursedialogcomponent
 
 
 }

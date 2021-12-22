@@ -39,24 +39,63 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
 
-      this.form.valueChanges.pipe(
-        filter(() => this.form.valid)
-      )
-      .subscribe(changes => {
+  //Lesson 12 -- MERGEMAP
 
-        const saveCourse$ = fromPromise(fetch(`/api/courses/${this.course.id}`, {
-          method: "PUT",
-          body: JSON.stringify(changes),
-          headers: {
-            'content-type': 'application/json'
-          }
-        }));
+      this.form.valueChanges.pipe(
+        filter(() => this.form.valid),
+        mergeMap(
+          changes => this.saveCourse(changes)
+          )
+      )
+      .subscribe();
+
+   // Lesson 11 -- CONCATMAP
+
+      // this.form.valueChanges.pipe(
+      //   filter(() => this.form.valid),
+      //   concatMap(
+      //     changes => this.saveCourse(changes)
+      //     )
+      // )
+      // .subscribe();
+
+    // Lesson 10
+
+        //Double subscribe is bad
+
+        //changes => {
+
+        // const saveCourse$ = this.saveCourse(changes);
+        // saveCourse$.subscribe();
+
+        // const saveCourse$ = fromPromise(fetch(`/api/courses/${this.course.id}`, {
+        //   method: "PUT",
+        //   body: JSON.stringify(changes),
+        //   headers: {
+        //     'content-type': 'application/json'
+        //   }
+        // }));
 
         //saveCourse$.subscribe() // subscribe inside a subscribe is bad practice
-      });
-      //fromPromise is a rxjs operator that converts pomises to observable
-      //since fetch() returns a promise
+      //}
+      //);
 
+      //fromPromise is a rxjs operator that converts promises to observable
+      //since fetch() returns a promise we need to use fromPromise
+
+    }
+
+
+    // Lesson 11 --- CONCATMAP
+
+    saveCourse(changes) {
+      return fromPromise(fetch(`/api/courses/${this.course.id}`, {
+        method: "PUT",
+        body: JSON.stringify(changes),
+        headers: {
+          'content-type': 'application/json'
+        }
+      }));
     }
 
 
