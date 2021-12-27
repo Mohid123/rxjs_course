@@ -56,12 +56,16 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
       //  From Lesson 18
-      const intitialLessons$ = this.loadLessons();
+      // const intitialLessons$ = this.loadLessons();
 
-      // Lesson 17
-      const searchLessons$ = fromEvent<any>(this.input.nativeElement, 'keyup') //keyboard click events
+      // // Lesson 17
+      // const searchLessons$ = fromEvent<any>(this.input.nativeElement, 'keyup') //keyboard click events
+
+      this.lessons$ = fromEvent<any>(this.input.nativeElement, 'keyup')
       .pipe(
         map(event => event.target.value), // value of click events are mapped
+        // Lesson 22 -- startWith only
+        startWith(''), //will ensure that initially all the data is rendered before search logic works
         debounceTime(400), // the search value will be considered stable only if it remains unchanged for 400ms
         distinctUntilChanged(), // only distinct values are returned. no repeated values
         // From Lesson 18
@@ -69,7 +73,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
       )
 
       //  From Lesson 18
-      this.lessons$ = concat(intitialLessons$, searchLessons$)
+      // this.lessons$ = concat(intitialLessons$, searchLessons$)
 
     }
 

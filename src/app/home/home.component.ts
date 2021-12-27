@@ -32,8 +32,6 @@ export class HomeComponent implements OnInit {
 
       const http$ = createHttpObservable('/api/courses');
 
-      // From Lesson 7
-
       const courses$: Observable<Course[]> = http$.pipe(
         tap(() => console.log("Http Request Executed")), //tap is used for emitting side effects outside the observable stream i.e for errors or consoling etc.
         map(
@@ -41,15 +39,23 @@ export class HomeComponent implements OnInit {
             res['payload'])
             ),
             shareReplay(),
+            //Lesson 21
+            retryWhen(errors => errors.pipe(
+              delayWhen(() => timer(2000)) //after 2s a new http stream will be created by retryWhen. delay when waits 2s and then returns observabele after error is thrown. normal delay() would delay error stream by 2s which is not what we want
+            )) //retryWhen will create a new http stream each time an error is thrown by the http stream and subscribe to it until the error is resolved
+
+
             // Lesson 20
-            catchError(err => {console.log('An Error has occurred', err) //th error can be passed first instead of the tap and map to stop dual execution of observable subscription
-              return throwError(err)
-            }),
-            // clean up logic after error
-            finalize(() => {
-              console.log('Finalize Executed...')
-            })
+            // catchError(err => {console.log('An Error has occurred', err) //the error can be passed first instead of the tap and map to stop dual execution of observable subscription as seen in console
+            //   return throwError(err)
+            // }),
+            // // clean up logic after error
+            // finalize(() => {
+            //   console.log('Finalize Executed...')
+            // })
+
             //Lesson 19
+
             // catchError(err => of([])) //empty array returned
               // {
               //   id: 0,
@@ -87,20 +93,5 @@ export class HomeComponent implements OnInit {
       // })
 
     }
-/// Our custom observable
-    // createHttpObservable(url: string) {
-    //   return Observable.create(observer => {
-    //     fetch('/api/courses').then(response => {
-    //       return response.json()
-    //     })
-    //     .then(body => {
-    //       observer.next(body);
-    //       observer.complete();
-    //     })
-    //     .catch(err => {
-    //       observer.error(err);
-    //     })
-    //   })
-    // }
 
 }
