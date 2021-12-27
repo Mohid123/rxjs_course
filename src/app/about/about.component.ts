@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { interval, timer, Observable, noop, of, concat, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { createHttpObservable } from '../common/util';
 
 @Component({
   selector: 'about',
@@ -96,35 +97,41 @@ export class AboutComponent implements OnInit {
 
 // Lesson 6 - The map operator
   // create a seperate function for the http get req for convenience
-function createHttpObservable(url: string) {
-  return Observable.create(observer => {
-    fetch('/api/courses').then(response => {
-      return response.json()
-    })
-    .then(body => {
-      observer.next(body);
-      observer.complete();
-    })
-    .catch(err => {
-      observer.error(err);
-    })
-  })
-}
+// function createHttpObservable(url: string) {
+//   return Observable.create(observer => {
+//     fetch('/api/courses').then(response => {
+//       return response.json()
+//     })
+//     .then(body => {
+//       observer.next(body);
+//       observer.complete();
+//     })
+//     .catch(err => {
+//       observer.error(err);
+//     })
+//   })
+// }
 
 const http$ = createHttpObservable('/api/courses');
 
-const courses$ = http$.pipe(
-  map(
-    res => Object.values(
-      res['payload'])//object.values converts to array. The output is an observable that emits an array of courses.
-      ) //The map operator maps the incoming observable into any other value we want to manipulate or transform it to.
-);
+const sub1 = http$.subscribe(console.log);
 
-courses$.subscribe(courses => {
-  console.log(courses),
-  noop,
-  () => console.log('completed')
-})
+// const courses$ = http$.pipe(
+//   map(
+//     res => Object.values(
+//       res['payload'])//object.values converts to array. The output is an observable that emits an array of courses.
+//       ) //The map operator maps the incoming observable into any other value we want to manipulate or transform it to.
+// );
+
+// const sub1 = courses$.subscribe(courses => {
+//   console.log(courses),
+//   noop,
+//   () => console.log('completed')
+// });
+
+setTimeout(() => {
+  sub1.unsubscribe();
+}, 0)
 
 // Lesson 7 - Seperating the view of advanced and beginner courses
 // Go to home component for lesson 7
@@ -161,7 +168,24 @@ courses$.subscribe(courses => {
 
 
 // Lesson 13 --- mergeMap. see coursedialogcomponent
+// Lesson 14 --- exhaustMap. see coursedialogcomponent
 
+// Lesson 15 --- unsubscribing to observables
+// const interval1$ = interval(1000);
+// const sub = interval1$.subscribe(console.log);
+
+// setTimeout(() => {
+//   sub.unsubscribe();
+// }, 5000);
+
+// Lesson 16 --- Lessons and Courses from backend logic. see courseComponent
+// Lesson 17 --- TypeAhead logic and debounceTime operator. see courseComponent
+
+// Lesson 18 --- switchMap Operator. see courseComponent
+
+// Lesson 19 --- Error Handling. see home compoenent
+
+// Lesson 20 --- Error Handling. see utils.ts
 
 }
 

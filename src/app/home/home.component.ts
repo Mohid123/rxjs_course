@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Course} from "../model/course";
-import {interval, noop, Observable, of, timer} from 'rxjs';
-import { catchError, delayWhen, map, retryWhen, shareReplay, tap, filter } from 'rxjs/operators';
+import {interval, noop, Observable, of, throwError, timer} from 'rxjs';
+import { catchError, delayWhen, map, retryWhen, shareReplay, tap, filter, finalize } from 'rxjs/operators';
+import { createHttpObservable } from '../common/util';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class HomeComponent implements OnInit {
 
       // Lesson 7 - Seperating the view of advanced and beginner courses
 
-      const http$ = this.createHttpObservable('/api/courses');
+      const http$ = createHttpObservable('/api/courses');
 
       // From Lesson 7
 
@@ -39,7 +40,27 @@ export class HomeComponent implements OnInit {
           res => Object.values(
             res['payload'])
             ),
-            shareReplay()
+            shareReplay(),
+            // Lesson 20
+            catchError(err => {console.log('An Error has occurred', err) //th error can be passed first instead of the tap and map to stop dual execution of observable subscription
+              return throwError(err)
+            }),
+            // clean up logic after error
+            finalize(() => {
+              console.log('Finalize Executed...')
+            })
+            //Lesson 19
+            // catchError(err => of([])) //empty array returned
+              // {
+              //   id: 0,
+              //   description: "Error has Occured",
+              //   iconUrl: 'https://s3-us-west-1.amazonaws.com/angular-university/course-images/rxjs-in-practice-course.png',
+              //   courseListIcon: 'https://angular-academy.s3.amazonaws.com/main-logo/main-page-logo-small-hat.png',
+              //   longDescription: "Understand the RxJs Observable pattern, learn the RxJs Operators via practical examples",
+              //   category: 'BEGINNER',
+              //   lessonsCount: 10
+              // },
+            //])) // The recovery observable strategy. This array is displayed if error occurs. catchError creates a recovery observable with any value we pass it.
           );
 
       // Lesson 8 - continues from 7
@@ -67,19 +88,19 @@ export class HomeComponent implements OnInit {
 
     }
 /// Our custom observable
-    createHttpObservable(url: string) {
-      return Observable.create(observer => {
-        fetch('/api/courses').then(response => {
-          return response.json()
-        })
-        .then(body => {
-          observer.next(body);
-          observer.complete();
-        })
-        .catch(err => {
-          observer.error(err);
-        })
-      })
-    }
+    // createHttpObservable(url: string) {
+    //   return Observable.create(observer => {
+    //     fetch('/api/courses').then(response => {
+    //       return response.json()
+    //     })
+    //     .then(body => {
+    //       observer.next(body);
+    //       observer.complete();
+    //     })
+    //     .catch(err => {
+    //       observer.error(err);
+    //     })
+    //   })
+    // }
 
 }

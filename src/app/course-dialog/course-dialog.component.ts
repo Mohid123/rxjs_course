@@ -39,25 +39,25 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
 
-  //Lesson 12 -- MERGEMAP
-
-      this.form.valueChanges.pipe(
-        filter(() => this.form.valid),
-        mergeMap(
-          changes => this.saveCourse(changes)
-          )
-      )
-      .subscribe();
-
-   // Lesson 11 -- CONCATMAP
+  //Lesson 13 -- MERGEMAP
 
       // this.form.valueChanges.pipe(
       //   filter(() => this.form.valid),
-      //   concatMap(
+      //   mergeMap(
       //     changes => this.saveCourse(changes)
       //     )
       // )
       // .subscribe();
+
+   // Lesson 11 -- CONCATMAP
+
+      this.form.valueChanges.pipe(
+        filter(() => this.form.valid),
+        concatMap(
+          changes => this.saveCourse(changes)
+          )
+      )
+      .subscribe();
 
     // Lesson 10
 
@@ -101,8 +101,12 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
 
 
     ngAfterViewInit() {
-
-
+      // LESSON 14 -- Exhaust Map
+      //perfect for preventing multiple event streams such as multiple click events etc.
+      fromEvent(this.saveButton.nativeElement, 'click')
+      .pipe(
+         (() => this.saveCourse(this.form.value))
+      ).subscribe();
     }
 
 
