@@ -188,6 +188,7 @@ setTimeout(() => {
 // Lesson 20 --- Error Handling. see utils.ts
 //Lesson 21 --- retryWhen() for errors. see home component
 //Lesson 22 --- startWith Operator. see course component
+//Lessson 24 --- forkJoin --  see coursecomponent
 }
 
 
