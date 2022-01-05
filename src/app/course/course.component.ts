@@ -11,11 +11,12 @@ import {
     concatMap,
     switchMap,
     withLatestFrom,
-    concatAll, shareReplay
+    concatAll, shareReplay, first, take
 } from 'rxjs/operators';
-import {merge, fromEvent, Observable, concat} from 'rxjs';
+import {merge, fromEvent, Observable, concat, forkJoin} from 'rxjs';
 import {Lesson} from '../model/lesson';
 import {createHttpObservable} from '../common/util';
+import { Store } from './../common/store.service';
 
 
 @Component({
@@ -25,16 +26,16 @@ import {createHttpObservable} from '../common/util';
 })
 export class CourseComponent implements OnInit, AfterViewInit {
 
-    courseId:string;
+    courseId:number;
 
     course$ : Observable<Course>;
 
     lessons$: Observable<Lesson[]>;
 
 
-    @ViewChild('searchInput', { static: true }) input: ElementRef;
+    @ViewChild('searchInput') input: ElementRef;
 
-    constructor(private route: ActivatedRoute) {
+    constructor(private route: ActivatedRoute, private store: Store) {
 
 
     }
@@ -44,6 +45,23 @@ export class CourseComponent implements OnInit, AfterViewInit {
         this.courseId = this.route.snapshot.params['id'];
 
         this.course$ = createHttpObservable(`/api/courses/${this.courseId}`);
+
+        this.store.selectCourseById(this.courseId);
+        // .pipe(
+        //   //first() //forces the completion of the course$ observable by taking only the first value. Not very necessary here. can also use take opeerator
+        //   //take(1) //same as above
+        // );
+
+        // forkJoin(this.course$, this.loadLessons())
+        // .subscribe(console.log)
+
+        this.loadLessons().pipe(
+          withLatestFrom(this.course$) //cwithLatestFrom will combine the latest value from course with loadLessons stream
+        )
+        .subscribe(([lessons, course]) => {
+          console.log("course: ", course);
+          console.log("lessons: ", lessons)
+        })
 
     }
 

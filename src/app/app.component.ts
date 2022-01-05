@@ -9,7 +9,6 @@ import { Store } from './common/store.service';
 export class AppComponent implements OnInit{
   constructor(private store: Store) {
   }
-  title = 'app';
 
   ngOnInit(): void {
       this.store.init(); //will be called only once when app starts
