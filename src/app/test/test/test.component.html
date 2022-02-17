@@ -1,0 +1,28 @@
+<form [formGroup]="lessonForm" (ngSubmit)="sendNewData()">
+  <mat-form-field class="example-full-width" appearance="fill" style="margin: 20px auto">
+    <mat-label>Description</mat-label>
+    <input matInput placeholder="Description" formControlName="description" name="description" style="background-color: antiquewhite;">
+  </mat-form-field>
+  <br>
+  <mat-form-field class="example-full-width" appearance="fill" style="margin: 20px auto">
+    <mat-label>Id</mat-label>
+    <input matInput placeholder="Id" formControlName="id" name="id" style="background-color: antiquewhite;">
+  </mat-form-field>
+  <br>
+  <mat-form-field class="example-full-width" appearance="fill" style="margin: 20px auto">
+    <mat-label>Duration</mat-label>
+    <input matInput placeholder="Duration" formControlName="duration" name="duration" style="background-color: antiquewhite;">
+  </mat-form-field>
+  <br>
+  <mat-form-field class="example-full-width" appearance="fill" style="margin: 20px auto">
+    <mat-label>Sequence Number</mat-label>
+    <input matInput placeholder="Sequence Number" formControlName="seqNo" name="seqNo" style="background-color: antiquewhite;">
+  </mat-form-field>
+  <br>
+  <mat-form-field class="example-full-width" appearance="fill" style="margin: 20px auto">
+    <mat-label>Course ID</mat-label>
+    <input matInput placeholder="Course ID" formControlName="courseId" name="courseId" style="background-color: antiquewhite;">
+  </mat-form-field>
+  <br>
+  <button type="submit" class="btn btn-primary">Create Lesson</button>
+</form>
